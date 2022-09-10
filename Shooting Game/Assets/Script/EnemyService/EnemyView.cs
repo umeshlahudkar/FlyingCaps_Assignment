@@ -1,12 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyView : MonoBehaviour
+public class EnemyView : MonoBehaviour, IDamageble
 {
     private EnemyController enemyController;
-
+    [SerializeField] private HealthController healthController;
     [SerializeField] private Transform weapon;
     [SerializeField] private Transform firePosition;
 
@@ -24,11 +21,16 @@ public class EnemyView : MonoBehaviour
 
         if(transform.position.x >= 11)
         {
-            Destroy(gameObject);
+            Disable();
         }
 
         enemyController.Move();
         enemyController.RotateWeapon(weapon);
+    }
+
+    public void Disable()
+    {
+        enemyController.Disable();
     }
 
     public void SetEnemyController(EnemyController enemyController)
@@ -36,4 +38,13 @@ public class EnemyView : MonoBehaviour
         this.enemyController = enemyController;
     }
 
+    public void TakeDamage(int damage)
+    {
+        healthController.TakeDamage(damage);
+    }
+
+    public CharacterType GetCharacterType()
+    {
+        return enemyController.GetCharacterType();
+    }
 }

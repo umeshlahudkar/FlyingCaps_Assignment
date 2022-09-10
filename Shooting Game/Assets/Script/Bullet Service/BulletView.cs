@@ -22,6 +22,12 @@ public class BulletView : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         timeElapced = 0;
+        IDamageble damageble = collision.gameObject.GetComponent<IDamageble>();
+        if(damageble != null && damageble.GetCharacterType() != bulletController.characterType)
+        {
+            damageble.TakeDamage(bulletController.bulletModel.bulletDamage);
+        }
+
         bulletController.Disable();
     }
 
