@@ -1,5 +1,8 @@
-public enum CharacterType
+namespace Shooter.Global
 {
-    Tower,
-    Enemy
+    public enum CharacterType
+    {
+        Tower,
+        Enemy
+    }
 }

@@ -1,19 +1,24 @@
-using System;
 using UnityEngine;
+using Shooter.Global;
+using Shooter.SO;
 
-public class BulletService : GenericSingleton<BulletService>
+namespace Shooter.BulletSevice
 {
-    [SerializeField] private BulletPool bulletPool;
-    [SerializeField] private BulletView bulletPrefab;
-
-    public void GetBullet(Transform spwanLocation, float launchForce, CharacterType characterType)
+    public class BulletService : GenericSingleton<BulletService>
     {
-        BulletController bulletController = bulletPool.GetItem(bulletPrefab, spwanLocation, launchForce, characterType, this);
-        bulletController.Enable(spwanLocation, launchForce, characterType);
-    }
+        [SerializeField] private BulletPool bulletPool;
+        [SerializeField] private BulletSO bulletSO;
 
-    public void ReturnToPool(BulletController bulletController)
-    {
-        bulletPool.ReturnToPool(bulletController);
+        public void GetBullet(Transform spwanLocation, float launchForce, CharacterType characterType)
+        {
+            BulletController bulletController = bulletPool.GetItem(bulletSO, spwanLocation, launchForce, characterType, this);
+            bulletController.Enable(spwanLocation, launchForce, characterType);
+        }
+
+        public void ReturnToPool(BulletController bulletController)
+        {
+            bulletPool.ReturnToPool(bulletController);
+        }
     }
 }
+

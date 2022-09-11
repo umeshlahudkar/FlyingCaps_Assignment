@@ -1,6 +1,11 @@
-interface IDamageble
+using Shooter.Global;
+
+namespace Shooter.Interface
 {
-    void TakeDamage(int damage);
-    CharacterType GetCharacterType();
-    void Disable();
+    interface IDamageble
+    {
+        void TakeDamage(float damage);
+        CharacterType GetCharacterType();
+        void Disable();
+    }
 }

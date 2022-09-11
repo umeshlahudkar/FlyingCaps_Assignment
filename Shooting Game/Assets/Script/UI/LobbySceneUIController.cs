@@ -1,49 +1,53 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Shooter.Level;
 
-public class LobbySceneUIController : MonoBehaviour
+namespace Shooter.UI
 {
-    [SerializeField] private GameObject levelSelectionPanel;
-    [SerializeField] private GameObject mainUIPanel;
-    [SerializeField] private TextMeshProUGUI levelInfoText;
-
-    private string selectedLevelName;
-    private int selectedLevelNumber;
-    private LevelStatus levelStatus;
-
-    private void Start()
+    public class LobbySceneUIController : MonoBehaviour
     {
-        mainUIPanel.SetActive(true);
-        levelSelectionPanel.SetActive(false);
-    }
+        [SerializeField] private GameObject levelSelectionPanel;
+        [SerializeField] private GameObject mainUIPanel;
+        [SerializeField] private TextMeshProUGUI levelInfoText;
 
-    public void OnPlayButtonClicked()
-    {
-        levelSelectionPanel.SetActive(true);
-        mainUIPanel.SetActive(false);
-    }
+        private string selectedLevelName;
+        private int selectedLevelNumber;
+        private LevelStatus levelStatus;
 
-    public void OnLevelButtonClicked(int level)
-    {
-        selectedLevelNumber = level - 1;
-        selectedLevelName = LevelManager.Instance.GetLevelName(level);
-        levelStatus = LevelManager.Instance.GetLevelStatus(selectedLevelName);
-
-        levelInfoText.text = selectedLevelName + " -> " + levelStatus;
-    }
-
-    public void OnStartButtonClick()
-    {
-        if(levelStatus == LevelStatus.Unlocked)
+        private void Start()
         {
-            PlayerPrefs.SetInt("SelectedLevel", selectedLevelNumber);
-            SceneManager.LoadScene(1);
+            mainUIPanel.SetActive(true);
+            levelSelectionPanel.SetActive(false);
         }
-    }
 
-    public void OnQuitButtonClicked()
-    {
-        Application.Quit();
+        public void OnPlayButtonClicked()
+        {
+            levelSelectionPanel.SetActive(true);
+            mainUIPanel.SetActive(false);
+        }
+
+        public void OnLevelButtonClicked(int level)
+        {
+            selectedLevelNumber = level;
+            selectedLevelName = LevelManager.Instance.GetLevelName(level - 1);
+            levelStatus = LevelManager.Instance.GetLevelStatus(selectedLevelName);
+
+            levelInfoText.text = selectedLevelName + " -> " + levelStatus;
+        }
+
+        public void OnStartButtonClick()
+        {
+            if (levelStatus != LevelStatus.Locked)
+            {
+                PlayerPrefs.SetInt("SelectedLevel", selectedLevelNumber);
+                SceneManager.LoadScene(1);
+            }
+        }
+
+        public void OnQuitButtonClicked()
+        {
+            Application.Quit();
+        }
     }
 }

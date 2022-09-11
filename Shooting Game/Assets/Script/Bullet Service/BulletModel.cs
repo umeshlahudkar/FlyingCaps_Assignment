@@ -1,15 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Shooter.SO;
 
-public class BulletModel
+namespace Shooter.BulletSevice
 {
-    public float timeToDisable {get; private set;}
-    public int bulletDamage { get; private set; }
-
-    public BulletModel()
+    public class BulletModel
     {
-       timeToDisable = 2;
-       bulletDamage = 10;
-    } 
+        public float timeToDisable { get; private set; }
+        public float bulletDamage { get; private set; }
+
+        public BulletModel(BulletSO bulletSO)
+        {
+            timeToDisable = bulletSO.timeToDisable;
+            bulletDamage = bulletSO.bulletDamage;
+        }
+    }
 }

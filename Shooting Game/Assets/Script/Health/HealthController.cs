@@ -1,60 +1,70 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Shooter.Interface;
 
-public class HealthController : MonoBehaviour
+namespace Shooter.Health
 {
-    [SerializeField] private GameObject healthBar;
-    [SerializeField] private Slider healthBarSlider;
-
-    private IDamageble damageble;
-    private Coroutine healthBarCoroutine;
-    private int health = 100;
-    private int healthBarActiveTime = 3;
-
-    private void OnEnable()
+    public class HealthController : MonoBehaviour
     {
-        health = 100;
-        healthBar.SetActive(false);
-        healthBarSlider.maxValue = health;
-        healthBarSlider.value = health;
-        damageble = gameObject.GetComponent<IDamageble>();
-    }
+        [SerializeField] private GameObject healthBar;
+        [SerializeField] private Slider healthBarSlider;
 
-    public void TakeDamage(int damage)
-    {
-        health -= damage;
+        private IDamageble damageble;
+        private Coroutine healthBarCoroutine;
+        private float health;
+        private float healthBarActiveTime;
 
-        ActivateHealthBar();
-        UpdateHealthBar();
-
-        if(health <= 0)
+        private void Start()
         {
-            damageble.Disable();
+            damageble = gameObject.GetComponent<IDamageble>();
+        }
+
+        public void SetParameter(float health, float healthBarActiveTime)
+        {
+            this.health = health;
+            this.healthBarActiveTime = healthBarActiveTime;
+            healthBar.SetActive(false);
+            healthBarSlider.maxValue = health;
+            healthBarSlider.value = health;
+        }
+
+        public void TakeDamage(float damage)
+        {
+            health -= damage;
+            health = Mathf.Max(health, 0);
+
+            ActivateHealthBar();
+            UpdateHealthBar();
+
+            if (health <= 0)
+            {
+                damageble.Disable();
+            }
+        }
+
+        private void UpdateHealthBar()
+        {
+            healthBarSlider.value = health;
+        }
+
+        private void ActivateHealthBar()
+        {
+            if (healthBarCoroutine != null)
+            {
+                StopCoroutine(healthBarCoroutine);
+            }
+            healthBarCoroutine = StartCoroutine(EnableHealthBar());
+        }
+
+        IEnumerator EnableHealthBar()
+        {
+            healthBar.SetActive(true);
+
+            yield return new WaitForSeconds(healthBarActiveTime);
+
+            healthBar.SetActive(false);
         }
     }
 
-    private void UpdateHealthBar()
-    {
-        healthBarSlider.value = health;
-    }
-
-    private void ActivateHealthBar()
-    {
-        if(healthBarCoroutine != null)
-        {
-            StopCoroutine(healthBarCoroutine);
-        }
-
-        healthBarCoroutine = StartCoroutine(EnableHealthBar());
-    }
-
-    IEnumerator EnableHealthBar()
-    {
-        healthBar.SetActive(true);
-
-        yield return new WaitForSeconds(healthBarActiveTime);
-
-        healthBar.SetActive(false);
-    }
 }
