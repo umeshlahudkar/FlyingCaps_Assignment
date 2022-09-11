@@ -6,10 +6,10 @@ public class BulletService : GenericSingleton<BulletService>
     [SerializeField] private BulletPool bulletPool;
     [SerializeField] private BulletView bulletPrefab;
 
-    public void GetBullet(Transform spwanLocation, float launchForce)
+    public void GetBullet(Transform spwanLocation, float launchForce, CharacterType characterType)
     {
-        BulletController bulletController = bulletPool.GetItem(bulletPrefab, spwanLocation, launchForce, this);
-        bulletController.Enable(spwanLocation, launchForce);
+        BulletController bulletController = bulletPool.GetItem(bulletPrefab, spwanLocation, launchForce, characterType, this);
+        bulletController.Enable(spwanLocation, launchForce, characterType);
     }
 
     public void ReturnToPool(BulletController bulletController)
