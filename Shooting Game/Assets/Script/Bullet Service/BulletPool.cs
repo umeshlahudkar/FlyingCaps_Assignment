@@ -1,27 +1,32 @@
 using UnityEngine;
+using Shooter.Global;
+using Shooter.SO;
 
-public class BulletPool : ObjectPool<BulletController>
+namespace Shooter.BulletSevice
 {
-    private BulletView bulletPrefab;
-    private Transform spwanLocation;
-    private float LaunchForce;
-    private BulletService bulletService;
-    private CharacterType characterType;
-
-    public BulletController GetItem(BulletView bulletView, Transform spwanPosition, float launchForce, CharacterType characterType, BulletService bulletService)
+    public class BulletPool : ObjectPool<BulletController>
     {
-        this.bulletPrefab = bulletView;
-        this.spwanLocation = spwanPosition;
-        this.LaunchForce = launchForce;
-        this.bulletService = bulletService;
-        this.characterType = characterType;
+        private BulletSO bulletSO;
+        private Transform spwanLocation;
+        private float LaunchForce;
+        private BulletService bulletService;
+        private CharacterType characterType;
 
-        return GetItem();
-    }
+        public BulletController GetItem(BulletSO bulletSO, Transform spwanPosition, float launchForce, CharacterType characterType, BulletService bulletService)
+        {
+            this.bulletSO = bulletSO;
+            this.spwanLocation = spwanPosition;
+            this.LaunchForce = launchForce;
+            this.bulletService = bulletService;
+            this.characterType = characterType;
 
-    public override BulletController CreateNew()
-    {
-        BulletController bulletController = new BulletController(bulletPrefab, spwanLocation, LaunchForce, characterType, bulletService);
-        return bulletController;
+            return GetItem();
+        }
+
+        public override BulletController CreateNew()
+        {
+            BulletController bulletController = new BulletController(bulletSO, spwanLocation, LaunchForce, characterType, bulletService);
+            return bulletController;
+        }
     }
 }

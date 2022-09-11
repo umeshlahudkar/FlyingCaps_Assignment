@@ -1,23 +1,28 @@
 using UnityEngine;
+using Shooter.Global;
+using Shooter.SO;
 
-public class EnemyPool : ObjectPool<EnemyController>
+namespace Shooter.EnemyService
 {
-    private EnemyView enemyPrefab;
-    private Vector2 spwanPosition;
-    private EnemyService enemyService;
-
-    public EnemyController GetItem(EnemyView enemyPrefab, Vector2 spwanPosition, EnemyService enemyService)
+    public class EnemyPool : ObjectPool<EnemyController>
     {
-        this.enemyPrefab = enemyPrefab;
-        this.spwanPosition = spwanPosition;
-        this.enemyService = enemyService;
+        private EnemySO enemySO;
+        private Vector2 spwanPosition;
+        private EnemyService enemyService;
 
-        return GetItem();
-    }
+        public EnemyController GetItem(EnemySO enemySO, Vector2 spwanPosition, EnemyService enemyService)
+        {
+            this.enemySO = enemySO;
+            this.spwanPosition = spwanPosition;
+            this.enemyService = enemyService;
 
-    public override EnemyController CreateNew()
-    {
-        EnemyController enemyController = new EnemyController(enemyPrefab, spwanPosition, enemyService);
-        return enemyController;
+            return GetItem();
+        }
+
+        public override EnemyController CreateNew()
+        {
+            EnemyController enemyController = new EnemyController(enemySO, spwanPosition, enemyService);
+            return enemyController;
+        }
     }
 }

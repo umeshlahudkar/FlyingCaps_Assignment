@@ -1,50 +1,56 @@
 using UnityEngine;
+using Shooter.Interface;
+using Shooter.Health;
+using Shooter.Global;
 
-public class EnemyView : MonoBehaviour, IDamageble
+namespace Shooter.EnemyService
 {
-    private EnemyController enemyController;
-    [SerializeField] private HealthController healthController;
-    [SerializeField] private Transform weapon;
-    [SerializeField] private Transform firePosition;
-
-    private float timeElapced;
-    private float timeIntervalToFire = 2;
-
-    private void Update()
+    public class EnemyView : MonoBehaviour, IDamageble
     {
-        timeElapced += Time.deltaTime;
-        if(timeElapced >= timeIntervalToFire)
+        private EnemyController enemyController;
+        public HealthController healthController;
+        [SerializeField] private Transform weapon;
+        [SerializeField] private Transform firePosition;
+
+        private float timeElapced;
+        private float timeIntervalToFire = 2;
+
+        private void Update()
         {
-            timeElapced = 0;
-            enemyController.Fire(firePosition);
+            timeElapced += Time.deltaTime;
+            if (timeElapced >= timeIntervalToFire)
+            {
+                timeElapced = 0;
+                enemyController.Fire(firePosition);
+            }
+
+            if (transform.position.x >= 11)
+            {
+                Disable();
+            }
+
+            enemyController.Move();
+            enemyController.RotateWeapon(weapon);
         }
 
-        if(transform.position.x >= 11)
+        public void Disable()
         {
-            Disable();
+            enemyController.Disable();
         }
 
-        enemyController.Move();
-        enemyController.RotateWeapon(weapon);
-    }
+        public void SetEnemyController(EnemyController enemyController)
+        {
+            this.enemyController = enemyController;
+        }
 
-    public void Disable()
-    {
-        enemyController.Disable();
-    }
+        public void TakeDamage(float damage)
+        {
+            healthController.TakeDamage(damage);
+        }
 
-    public void SetEnemyController(EnemyController enemyController)
-    {
-        this.enemyController = enemyController;
-    }
-
-    public void TakeDamage(int damage)
-    {
-        healthController.TakeDamage(damage);
-    }
-
-    public CharacterType GetCharacterType()
-    {
-        return enemyController.GetCharacterType();
+        public CharacterType GetCharacterType()
+        {
+            return enemyController.GetCharacterType();
+        }
     }
 }

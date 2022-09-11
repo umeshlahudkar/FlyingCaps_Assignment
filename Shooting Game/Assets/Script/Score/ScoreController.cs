@@ -1,52 +1,68 @@
 using UnityEngine;
 using TMPro;
+using Shooter.Event;
+using Shooter.Level;
 
-public class ScoreController : MonoBehaviour
+namespace Shooter.Score
 {
-    [SerializeField] private TextMeshProUGUI scoreText;
-    [SerializeField] private TextMeshProUGUI highScoreText;
-
-    private int score = 0;
-    private int highScore;
-    private string HighScore = "HighScore";
-
-    private void OnEnable()
+    public class ScoreController : MonoBehaviour
     {
-        EventService.Instance.OnEnemyKilled += UpdateScore;
-    }
+        [SerializeField] private TextMeshProUGUI scoreText;
+        [SerializeField] private TextMeshProUGUI highScoreText;
 
-    private void Start()
-    {
-        highScore = PlayerPrefs.GetInt(HighScore, 0);
-        DisplayScore();
-        DisplayHighScore();
-    }
+        private int score = 0;
+        private int highScore;
+        private string HighScore = "HighScore";
 
-    private void UpdateScore()
-    {
-        score += 10;
-        DisplayScore();
-
-        if(score > highScore)
+        private void OnEnable()
         {
-            highScore = score;
-            PlayerPrefs.SetInt(HighScore, highScore);
+            EventService.Instance.OnEnemyKilled += UpdateScore;
+            EventService.Instance.OnReplayButtonClick += ResetScore;
+        }
+
+        private void Start()
+        {
+            highScore = PlayerPrefs.GetInt(HighScore, 0);
+            DisplayScore();
             DisplayHighScore();
+        }
+
+        private void ResetScore()
+        {
+            score = 0;
+            DisplayScore();
+        }
+
+        private void UpdateScore()
+        {
+            score += 10;
+            DisplayScore();
+
+            if (score > highScore)
+            {
+                highScore = score;
+                PlayerPrefs.SetInt(HighScore, highScore);
+                DisplayHighScore();
+            }
+
+            LevelManager.Instance.CheckForLevelComplete(score);
+        }
+
+        private void DisplayScore()
+        {
+            scoreText.text = score.ToString();
+        }
+
+        private void DisplayHighScore()
+        {
+            highScoreText.text = highScore.ToString();
+        }
+
+        private void OnDisable()
+        {
+            EventService.Instance.OnEnemyKilled -= UpdateScore;
+            EventService.Instance.OnReplayButtonClick -= ResetScore;
         }
     }
 
-    private void DisplayScore()
-    {
-        scoreText.text = score.ToString();
-    }
-
-    private void DisplayHighScore()
-    {
-        highScoreText.text = highScore.ToString();
-    }
-
-    private void OnDisable()
-    {
-        EventService.Instance.OnEnemyKilled -= UpdateScore;
-    }
 }

@@ -1,43 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Shooter.Interface;
 
-public class BulletView : MonoBehaviour
+namespace Shooter.BulletSevice
 {
-    private BulletController bulletController;
-    [SerializeField] private Rigidbody2D rb2D;
-
-    private float timeElapced;
-
-    private void Update()
+    public class BulletView : MonoBehaviour
     {
-        timeElapced += Time.deltaTime;
-        if(timeElapced >= bulletController.bulletModel.timeToDisable)
+        private BulletController bulletController;
+        [SerializeField] private Rigidbody2D rb2D;
+
+        private float timeElapced;
+
+        private void Update()
+        {
+            timeElapced += Time.deltaTime;
+            if (timeElapced >= bulletController.bulletModel.timeToDisable)
+            {
+                timeElapced = 0;
+                bulletController.Disable();
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
         {
             timeElapced = 0;
+            IDamageble damageble = collision.gameObject.GetComponent<IDamageble>();
+            if (damageble != null && damageble.GetCharacterType() != bulletController.characterType)
+            {
+                damageble.TakeDamage(bulletController.bulletModel.bulletDamage);
+            }
+
             bulletController.Disable();
         }
-    }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        timeElapced = 0;
-        IDamageble damageble = collision.gameObject.GetComponent<IDamageble>();
-        if(damageble != null && damageble.GetCharacterType() != bulletController.characterType)
+        public Rigidbody2D GetRigidbody2D()
         {
-            damageble.TakeDamage(bulletController.bulletModel.bulletDamage);
+            return rb2D;
         }
 
-        bulletController.Disable();
-    }
-
-    public Rigidbody2D GetRigidbody2D()
-    {
-        return rb2D;
-    } 
-
-    public void SetBulletController(BulletController bulletController)
-    {
-        this.bulletController = bulletController;
+        public void SetBulletController(BulletController bulletController)
+        {
+            this.bulletController = bulletController;
+        }
     }
 }

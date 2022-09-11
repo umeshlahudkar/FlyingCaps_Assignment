@@ -1,18 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Shooter.SO;
 
-public class EnemyModel : MonoBehaviour
+namespace Shooter.EnemyService
 {
-    // Start is called before the first frame update
-    void Start()
+    public class EnemyModel
     {
-        
-    }
+        public float movementSpeed { get; private set; }
+        public float weaponRotationSpeed { get; private set; }
+        public float timeBetweenFire { get; private set; }
+        public float bulletLaunchForce { get; private set; }
+        public float health { get; private set; }
+        public float healthBarActiveTime { get; private set; }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public EnemyModel(EnemySO enemySO)
+        {
+            movementSpeed = enemySO.movementSpeed;
+            weaponRotationSpeed = enemySO.weaponRotationSpeed;
+            timeBetweenFire = enemySO.timeBetweenFire;
+            bulletLaunchForce = enemySO.bulletLaunchForce;
+            health = enemySO.health;
+            healthBarActiveTime = enemySO.healthBarActiveTime;
+        }
     }
 }

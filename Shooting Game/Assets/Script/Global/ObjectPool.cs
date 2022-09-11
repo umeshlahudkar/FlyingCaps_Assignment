@@ -1,56 +1,60 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool<T> : MonoBehaviour where T: class
+namespace Shooter.Global
 {
-    private List<PoolItem> pooledItem = new List<PoolItem>();
-
-    public T GetItem()
+    public class ObjectPool<T> : MonoBehaviour where T : class
     {
-        if(pooledItem.Count > 0)
+        private List<PoolItem> pooledItem = new List<PoolItem>();
+
+        public T GetItem()
         {
-            for(int i = 0; i < pooledItem.Count; i++)
+            if (pooledItem.Count > 0)
             {
-                if(pooledItem[i].IsUsed == false)
+                for (int i = 0; i < pooledItem.Count; i++)
                 {
-                    pooledItem[i].IsUsed = true;
-                    return pooledItem[i].Item;
+                    if (pooledItem[i].IsUsed == false)
+                    {
+                        pooledItem[i].IsUsed = true;
+                        return pooledItem[i].Item;
+                    }
+                }
+            }
+
+            return CreateNewItem();
+        }
+
+        public T CreateNewItem()
+        {
+            PoolItem newItem = new PoolItem();
+            newItem.Item = CreateNew();
+            newItem.IsUsed = true;
+            pooledItem.Add(newItem);
+            return newItem.Item;
+        }
+
+        public virtual T CreateNew()
+        {
+            return null;
+        }
+
+        public void ReturnToPool(T item)
+        {
+            for (int i = 0; i < pooledItem.Count; i++)
+            {
+                if (pooledItem[i].Item.Equals(item))
+                {
+                    pooledItem[i].IsUsed = false;
                 }
             }
         }
 
-        return CreateNewItem();
-    }
-
-    public T CreateNewItem()
-    {
-        PoolItem newItem = new PoolItem();
-        newItem.Item = CreateNew();
-        newItem.IsUsed = true;
-        pooledItem.Add(newItem);
-        return newItem.Item;
-    }
-
-    public virtual T CreateNew()
-    {
-        return null;
-    }
-
-    public void ReturnToPool(T item)
-    {
-        for (int i = 0; i < pooledItem.Count; i++)
+        public class PoolItem
         {
-            if (pooledItem[i].Item.Equals(item))
-            {
-                pooledItem[i].IsUsed = false;
-            }
+            public T Item;
+            public bool IsUsed;
         }
-    }
 
-    public class PoolItem
-    {
-        public T Item;
-        public bool IsUsed;
     }
-
 }
+
